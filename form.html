@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="auto" data-timezone="Asia/Jakarta">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Formulir Pendaftaran Konser dengan Fitur Aksesibilitas Web Berstandar WCAG 2.1">
+    <title>Pendaftaran Konser - Ramah Aksesibilitas</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
+</head>
+
+<body>
+    <!-- Skip to main content link untuk navigasi keyboard -->
+    <a href="#main-content" class="skip-link">Loncat ke konten utama</a>
+
+    <!-- Live Announcement untuk Screen Reader -->
+    <div id="acc-live-announcer" class="sr-only" aria-live="polite"></div>
+
+    <!-- Tombol Aksesibilitas Mengambang (Floating Accessibility Widget Button) -->
+    <button id="acc-toggle-btn" class="acc-floating-btn" aria-label="Buka Menu Aksesibilitas" aria-haspopup="dialog" aria-expanded="false" title="Menu Aksesibilitas (Alt + A)">
+        <svg class="acc-icon" viewBox="0 0 24 24" width="28" height="28" aria-hidden="true" focusable="false">
+            <path fill="currentColor" d="M12 2c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm9 7h-6v13h-2v-6h-2v6H9V9H3V7h18v2z"/>
+        </svg>
+        <span class="acc-btn-label">Aksesibilitas</span>
+    </button>
+
+    <!-- Panel Modal Menu Aksesibilitas (Mirip Kemkes.go.id) -->
+    <div id="acc-panel" class="acc-panel" role="dialog" aria-labelledby="acc-panel-title" aria-modal="true" hidden>
+        <div class="acc-panel-header">
+            <div class="acc-header-title">
+                <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" fill="currentColor">
+                    <path d="M12 2c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm9 7h-6v13h-2v-6h-2v6H9V9H3V7h18v2z"/>
+                </svg>
+                <h2 id="acc-panel-title">Menu Aksesibilitas</h2>
+            </div>
+            <button id="acc-close-btn" class="acc-close-btn" aria-label="Tutup Menu Aksesibilitas">&times;</button>
+        </div>
+
+        <div class="acc-panel-body">
+            <!-- 1. PENGATURAN UKURAN FONT -->
+            <section class="acc-section">
+                <h3 class="acc-section-title">
+                    <span class="acc-section-icon">🔤</span> Ukuran Teks (Font)
+                </h3>
+                <div class="acc-font-controls">
+                    <button type="button" id="btn-font-dec" class="acc-btn" title="Kecilkan Ukuran Font" aria-label="Kecilkan Ukuran Font">
+                        <span aria-hidden="true">A-</span>
+                    </button>
+                    <button type="button" id="btn-font-reset" class="acc-btn acc-btn-active" title="Reset Ukuran Font Default" aria-label="Reset Ukuran Font (100%)">
+                        <span id="font-size-indicator">100%</span>
+                    </button>
+                    <button type="button" id="btn-font-inc" class="acc-btn" title="Besarkan Ukuran Font" aria-label="Besarkan Ukuran Font">
+                        <span aria-hidden="true">A+</span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- 2. PENGATURAN WARNA & KONTRAS -->
+            <section class="acc-section">
+                <h3 class="acc-section-title">
+                    <span class="acc-section-icon">🎨</span> Mode Warna & Kontras
+                </h3>
+                <div class="acc-grid-controls">
+                    <button type="button" id="btn-high-contrast" class="acc-btn acc-option-btn">
+                        <span class="acc-btn-dot dot-contrast"></span> Kontras Tinggi
+                    </button>
+                    <button type="button" id="btn-grayscale" class="acc-btn acc-option-btn">
+                        <span class="acc-btn-dot dot-gray"></span> Monokrom (Abu-abu)
+                    </button>
+                    <button type="button" id="btn-invert" class="acc-btn acc-option-btn">
+                        <span class="acc-btn-dot dot-invert"></span> Balik Warna (Invert)
+                    </button>
+                    <button type="button" id="btn-sepia" class="acc-btn acc-option-btn">
+                        <span class="acc-btn-dot dot-sepia"></span> Ramah Mata (Kuning Hangat)
+                    </button>
+                </div>
+            </section>
+
+            <!-- 3. DARK MODE / LIGHT MODE BERDASARKAN WAKTU & TIME ZONE -->
+            <section class="acc-section">
+                <h3 class="acc-section-title">
+                    <span class="acc-section-icon">⏰</span> Tema Berdasarkan Waktu & Zona Waktu
+                </h3>
+                
+                <div class="acc-timezone-box">
+                    <label for="acc-timezone-select" class="acc-label-sm">Pilih Zona Waktu (Time Zone):</label>
+                    <select id="acc-timezone-select" class="acc-select" aria-label="Zona Waktu">
+                        <option value="Asia/Jakarta" selected>WIB - Indonesia Barat (UTC+7)</option>
+                        <option value="Asia/Makassar">WITA - Indonesia Tengah (UTC+8)</option>
+                        <option value="Asia/Jayapura">WIT - Indonesia Timur (UTC+9)</option>
+                        <option value="UTC">UTC / GMT (UTC+0)</option>
+                        <option value="Asia/Tokyo">JST - Tokyo (UTC+9)</option>
+                        <option value="Europe/London">GMT/BST - London (UTC+0/+1)</option>
+                        <option value="America/New_York">EST/EDT - New York (UTC-5/-4)</option>
+                    </select>
+                </div>
+
+                <div class="acc-time-info" id="acc-time-info" aria-live="polite">
+                    <div class="acc-clock">
+                        <span class="clock-label">Jam Terpilih:</span>
+                        <strong id="acc-current-time">--:--:--</strong>
+                    </div>
+                    <div class="acc-status-tag" id="acc-theme-status-tag">
+                        Mode Otomatis Aktif
+                    </div>
+                </div>
+
+                <!-- Pilihan Mode Tema -->
+                <div class="acc-theme-mode-buttons">
+                    <button type="button" id="btn-theme-auto" class="acc-btn acc-mode-btn acc-btn-active" title="Otomatis mengikuti siang (terang) dan malam (gelap) sesuai zona waktu">
+                        ☀️/🌙 Otomatis Waktu
+                    </button>
+                    <button type="button" id="btn-theme-light" class="acc-btn acc-mode-btn" title="Paksa Mode Terang">
+                        ☀️ Terang
+                    </button>
+                    <button type="button" id="btn-theme-dark" class="acc-btn acc-mode-btn" title="Paksa Mode Gelap">
+                        🌙 Gelap
+                    </button>
+                </div>
+
+                <!-- Simulasi Waktu Interaktif untuk Pengujian Penguji/Dosen -->
+                <div class="acc-sim-box">
+                    <div class="acc-sim-header">
+                        <label for="acc-time-slider" class="acc-label-sm">Simulasi Waktu (Geser untuk Uji Siang/Malam):</label>
+                        <span id="acc-sim-val" class="acc-sim-val">Waktu Riil</span>
+                    </div>
+                    <input type="range" id="acc-time-slider" min="-1" max="23" value="-1" step="1" aria-label="Simulasi jam untuk pengujian mode gelap dan terang">
+                    <div class="acc-sim-desc">
+                        <span>-1: Waktu Riil</span> | <span>06.00-17.59: Siang (Terang)</span> | <span>18.00-05.59: Malam (Gelap)</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4. FITUR TAMBAHAN BANTUAN AKSESIBILITAS -->
+            <section class="acc-section">
+                <h3 class="acc-section-title">
+                    <span class="acc-section-icon">🔊</span> Bantuan Navigasi & Suara
+                </h3>
+                <div class="acc-grid-controls">
+                    <button type="button" id="btn-read-aloud" class="acc-btn acc-option-btn" aria-label="Bacakan Halaman dengan Suara">
+                        📢 <span id="read-aloud-text">Bacakan Form (TTS)</span>
+                    </button>
+                    <button type="button" id="btn-underline-links" class="acc-btn acc-option-btn">
+                        🔗 Garis Bawahi Tautan
+                    </button>
+                    <button type="button" id="btn-cursor-large" class="acc-btn acc-option-btn">
+                        👆 Kursor Besar
+                    </button>
+                    <button type="button" id="btn-reset-all" class="acc-btn acc-btn-danger" aria-label="Kembalikan semua pengaturan ke awal">
+                        🔄 Reset Semua Setelan
+                    </button>
+                </div>
+            </section>
+        </div>
+        
+        <div class="acc-panel-footer">
+            <small>Widget Aksesibilitas Web &bull; WCAG 2.1 Compliant</small>
+        </div>
+    </div>
+
+    <!-- Backdrop untuk menutup panel saat klik di luar -->
+    <div id="acc-backdrop" class="acc-backdrop" hidden></div>
+
+    <!-- KONTEN UTAMA HALAMAN -->
+    <main id="main-content" class="container">
+        <header class="form-header">
+            <div class="badge-header">Sistem Pendaftaran Resmi</div>
+            <h1>Pendaftaran Konser</h1>
+            <p>Selamat datang! Daftarkan diri Anda untuk mengikuti konser musik yang akan datang. Formulir ini telah dilengkapi fitur aksesibilitas bagi semua pengguna.</p>
+        </header>
+
+        <!-- Area Pesan Notifikasi Sukses / Interaksi -->
+        <div id="form-notification" class="notification-box" role="alert" aria-live="assertive" hidden></div>
+
+        <form id="konserForm" novalidate>
+            <!-- FIELDSET 1: DATA PESERTA -->
+            <fieldset>
+                <legend>Data Peserta</legend>
+
+                <div class="form-group">
+                    <label for="nama">Nama Lengkap: <span class="required" aria-hidden="true">*</span></label>
+                    <input type="text" id="nama" name="nama" size="40" required placeholder="Contoh: Ulil Abshar Said" autocomplete="name" aria-required="true">
+                    <span class="field-error" id="error-nama" aria-live="polite"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email: <span class="required" aria-hidden="true">*</span></label>
+                    <input type="email" id="email" name="email" size="40" required placeholder="nama@email.com" autocomplete="email" aria-required="true">
+                    <span class="field-error" id="error-email" aria-live="polite"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="hp">No. Handphone: <span class="required" aria-hidden="true">*</span></label>
+                    <input type="tel" id="hp" name="hp" size="40" required placeholder="Contoh: 08123456789" autocomplete="tel" aria-required="true">
+                    <span class="field-error" id="error-hp" aria-live="polite"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="alamat">Alamat Domisili:</label>
+                    <textarea id="alamat" name="alamat" rows="3" cols="40" placeholder="Tuliskan alamat lengkap tempat tinggal Anda..."></textarea>
+                </div>
+            </fieldset>
+
+            <!-- FIELDSET 2: PILIHAN TIKET -->
+            <fieldset>
+                <legend>Pilihan Tiket</legend>
+
+                <div class="form-group">
+                    <label for="jenis_tiket">Jenis Tiket: <span class="required" aria-hidden="true">*</span></label>
+                    <select id="jenis_tiket" name="jenis_tiket" required aria-required="true">
+                        <option value="Regular">Regular - Rp 250.000</option>
+                        <option value="VIP">VIP - Rp 500.000</option>
+                        <option value="VVIP">VVIP - Rp 1.000.000</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="jumlah">Jumlah Tiket (Maks. 10): <span class="required" aria-hidden="true">*</span></label>
+                    <input type="number" id="jumlah" name="jumlah" value="1" min="1" max="10" required aria-required="true">
+                </div>
+
+                <div class="form-group">
+                    <label for="tanggal">Tanggal Konser: <span class="required" aria-hidden="true">*</span></label>
+                    <input type="date" id="tanggal" name="tanggal" required aria-required="true">
+                </div>
+
+                <fieldset class="sub-fieldset">
+                    <legend class="sub-legend">Metode Pembayaran: <span class="required" aria-hidden="true">*</span></legend>
+                    <div class="radio-group">
+                        <label class="radio-label">
+                            <input type="radio" name="pembayaran" value="transfer" checked required>
+                            <span>Transfer Bank</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="pembayaran" value="e-wallet">
+                            <span>E-Wallet (GoPay, OVO, Dana)</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="pembayaran" value="cash">
+                            <span>Cash di Lokasi</span>
+                        </label>
+                    </div>
+                </fieldset>
+            </fieldset>
+
+            <!-- FIELDSET 3: CATATAN TAMBAHAN -->
+            <fieldset>
+                <legend>Catatan Tambahan</legend>
+                <div class="form-group">
+                    <label for="catatan">Permintaan Khusus atau Kebutuhan Aksesibilitas Khusus:</label>
+                    <textarea id="catatan" name="catatan" rows="4" cols="50"
+                        placeholder="Tulis catatan, permintaan tempat duduk khusus, atau kebutuhan aksesibilitas Anda di venue konser..."></textarea>
+                </div>
+            </fieldset>
+
+            <!-- TOMBOL SUBMIT INTERAKTIF (BISA BERUBAH WARNA SAAT DIKLIK) -->
+            <div class="submit-container">
+                <button type="submit" id="submitBtn" class="btn-submit" aria-live="polite">
+                    <span class="btn-spinner" aria-hidden="true" hidden></span>
+                    <span class="btn-text">Daftar Sekarang</span>
+                </button>
+                <div id="submit-feedback-badge" class="submit-status-badge" aria-live="polite"></div>
+            </div>
+        </form>
+
+        <section class="registrations-section" aria-labelledby="registrations-title">
+            <div class="registrations-header">
+                <h2 id="registrations-title">Data Pendaftar</h2>
+                <button type="button" id="refresh-registrations" class="btn-refresh">Muat Ulang</button>
+            </div>
+            <p id="registrations-status" class="registrations-status" role="status" aria-live="polite">Memuat data pendaftar...</p>
+            <ul id="registrations-list" class="registrations-list"></ul>
+        </section>
+
+        <footer class="page-footer">
+            <p>&copy; 2026 Pendaftaran Konser Musik &bull; Mendukung Standar Aksesibilitas Web (WCAG 2.1 AA)</p>
+            <p><small>Dikembangkan untuk Tugas Praktikum Desain Web &bull; Universitas Pertahanan RI</small></p>
+        </footer>
+    </main>
+</body>
+</html>
